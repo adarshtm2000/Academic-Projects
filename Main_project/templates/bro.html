@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}CVGen{% endblock %}
+
+{% block content %}
+<form action="/" method="POST">
+    <input type="text" id="prompt" name="prompt" placeholder="Enter prompt here"><br>
+    <button type="submit">Generate</button>
+</form>
+<div id="completion">
+    {% if prompt %}
+        <p>{{ completion }}</p>
+    {% endif %}
+</div>
+{% endblock %}

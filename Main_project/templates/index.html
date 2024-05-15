@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <title>ContextCraft</title>
+</head>
+<body>
+    <nav class="bg-black p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div>
+                <a href="#" class="text-white font-bold text-lg">ContextCraft</a>
+            </div>
+            <div class="hidden md:block">
+                <a href="#" class="text-white ml-4">Home</a>
+                <a href="#" class="text-white ml-4">About</a>
+                <a href="#" class="text-white ml-4">Contact</a>
+            </div>
+            <div class="block md:hidden">
+                <button class="text-white" id="toggleNav">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <div class="container mx-auto my-4 px-4 md:px-0">
+        <p class="text-lg text-gray-500 italic opacity-80">
+            "ContextCraft is a platform that allows you to convert your Malayalam
+            voice input into formal English written content."
+        </p>
+        <form action="/" method="POST">
+            <textarea
+                id="recognizedContent"
+                name="malayalam_text"
+                class="border my-2 p-2 w-full md:h-20"
+                placeholder="Enter a prompt here/use the start button to start recording"
+                rows="4"
+            ></textarea>
+
+            <button type="submit" style="background-color: black; color: white; border: none; border-radius: 5px; width: 10%; height: 40px;">Generate</button>
+        </form>
+        <br>
+        <button id="startRecognition" onclick="startVoiceRecognition()">
+            Start Voice Recognition
+        </button>
+        <button id="stopRecognition" onclick="stopVoiceRecognition()" class="hidden">
+            Stop Voice Recognition
+        </button>
+
+        <div style="height: 300px; width: 30%; background-color: lightgrey; border-radius: 5px;">
+            {% if prompt %}
+                <p id="completionText">{{ completion }}</p>
+            {% endif %}
+        </div>
+        
+        <button id="copyButton" style="background-color: black; color: white; border: none; border-radius: 5px; width: 10%; height: 40px;">Copy</button>
+        
+
+    <script>
+        let recognition;
+
+        function startVoiceRecognition() {
+            recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+            recognition.lang = "ml-IN"; // Malayalam (India);
+
+            recognition.onstart = () => {
+                console.log("Speech recognition started");
+                toggleButtonVisibility("startRecognition", "hidden");
+                toggleButtonVisibility("stopRecognition", "visible");
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById("recognizedContent").value = transcript;
+                // Send the transcript to your server for processing if needed
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error:", event.error);
+            };
+
+            recognition.onend = () => {
+                console.log("Speech recognition ended");
+                toggleButtonVisibility("startRecognition", "visible");
+                toggleButtonVisibility("stopRecognition", "hidden");
+            };
+
+            recognition.start();
+        }
+
+        function stopVoiceRecognition() {
+            if (recognition) {
+                recognition.stop();
+            }
+        }
+
+        function toggleButtonVisibility(buttonId, visibilityClass) {
+            const button = document.getElementById(buttonId);
+            button.classList.remove("visible", "hidden");
+            button.classList.add(visibilityClass);
+        }
+
+        const toggleNavBtn = document.getElementById("toggleNav");
+        const navLinks = document.querySelector(".hidden.md\\:block");
+
+        toggleNavBtn.addEventListener("click", function () {
+            navLinks.classList.toggle("hidden");
+        });
+        //js function for copy button
+        document.getElementById('copyButton').addEventListener('click', function() {
+        var completionText = document.getElementById('completionText').innerText;
+        var tempInput = document.createElement('textarea');
+        tempInput.value = completionText;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        alert('Text copied successfully');
+        });
+    </script>
+</body>
+</html>
