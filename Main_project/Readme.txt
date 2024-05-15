@@ -1,4 +1,4 @@
-"This is my academic project completed for the fulfillment of B.Tech in Computer Science and Engineering from the College of Engineering Chengannur."
+"This is my academic main project completed for the fulfillment of B.Tech in Computer Science and Engineering from the College of Engineering Chengannur."
 About the project
 -
 -
