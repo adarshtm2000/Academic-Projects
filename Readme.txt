@@ -1,1 +1,1 @@
-Hi this this folder contain my academic projects
+Hi this folder contain my academic projects
